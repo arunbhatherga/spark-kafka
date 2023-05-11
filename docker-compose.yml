@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  app:
+    build: 
+      context: /home/arunherga/kafka-spark
+
+    depends_on:
+      - postgres
+
+    volumes:
+      - /home/arunherga/kafka-spark/data:/app/data
+    
+    command: python3 stream_processing.py
+
+
+
+  postgres:
+    container_name: test1_postgres
+    image: "postgres:12"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      PGDATA: "/data/postgres"
+    volumes:
+      - postgres:/data/postgres
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    ports:
+      - "15432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres:
+
